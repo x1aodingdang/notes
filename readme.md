@@ -1,4 +1,4 @@
-# 总结的一些面试问题
+# [总结的一些面试问题](https://github.com/x1aodingdang/notes)
 
 ## 浏览器
 
@@ -93,4 +93,132 @@
 new VueRouter({
   routes: [{ path: "/foo", component: () => import("/foo") }],
 });
+```
+
+> 参考 https://router.vuejs.org/zh/guide/advanced/lazy-loading.html
+
+## JS
+
+#### 基本数据类型
+
+- number
+- string
+- boolean
+- undefind
+- null
+- symbol
+
+#### 什么是闭包
+
+简单来说就是函数中返回函数
+
+```js
+function test() {
+  let a = 0;
+  console.log(a); // 0
+  return function () {
+    let b = 1;
+    console.log(a, b);
+  };
+}
+let b = test(); // 0
+b(); // 这里有能访问a 这就是闭包
+```
+
+> 参考 https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Closures
+
+#### 作用域有哪些
+
+作用域链是向上查找的 父级不能访问到子级 也不能访问到兄弟之间的作用域
+
+```js
+var a = 1; // 全局作用域
+function b() {
+  var c = 2; // 在 b 函数体的 局部作用域
+  function d() {
+    var e = 3; // 在 d 函数体的作用局
+    console.log(a, c); // 是可以访问上层作用域的
+    console.log(g); //g is not defined 不能访问兄弟作用域
+  }
+  console.log(g); // g is not defined 不能访问子级作用域
+  function f() {
+    var g = 4; // 在 d 函数体的作用局
+  }
+}
+```
+
+#### 如何给数组添加新的方法？
+
+```js
+var a = [];
+a.__proto__.console = function () {
+  console.log(this);
+};
+Array.prototype._push = function () {
+  return this.push(...arguments);
+};
+```
+
+#### 双等三等区别
+
+双等只比较值相不相等 三等还比较了类型相不相等
+
+```js
+1 == "1"; // true
+1 === "1"; // false
+```
+
+#### 如何判断两个数组是否相等，是用双等还是三等？
+
+```js
+var a = [1, 2, 3];
+var b = [1, 2, 3];
+a == b; // false   由于是引用数据类型 这里比较的是内存地址值
+a === b; // false   由于是引用数据类型 这里比较的是内存地址值
+// 简单粗暴
+JSON.stringify(a) === JSON.stringify(b); // true
+```
+
+#### es6 语法
+
+```js
+let a; // 定义变量  没有作用域提升
+const b = 1; // 定义常量  赋值了不可改变 没有作用域提升
+`${a}` // 模板字符串
+...; // 解构语法
+() => {}; //  箭头函数
+Promise; // Promose 处理异步任务
+async () => { await... } // 向同步代码一样处理异步任务
+Proxy; //代理  劫持对象的 set get   也是Vue3.x  所用的到核心api
+Set; // 集合  不会重复值
+Map; // 映射
+class // class 语法
+```
+
+> 参考 https://es6.ruanyifeng.com/
+
+#### 如何部署？Nginx 如何配置
+
+- ##### 部署
+
+  自动化部署:
+
+  - Jenkins
+  - gitlab-ci
+  - docker 容器
+
+- #### nginx 基础配置
+
+```nginx
+http {
+    listen 80; # 监听端口
+    server_name localhost; // 域名
+    location / { # 匹配相应的路径 可以写多个
+      root /; # 服务的根目录
+      index index.html; # 匹配的根目录文件
+    }
+    location /api { # 通常作为反向代理配置
+        proxy_pass xxx指向服务器代理地址; # 后端 api 地址
+    }
+}
 ```
