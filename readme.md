@@ -97,6 +97,42 @@ new VueRouter({
 
 > 参考 https://router.vuejs.org/zh/guide/advanced/lazy-loading.html
 
+#### v-if v-show 区别
+
+> - `v-if` 会把这个组件销毁 对应的生命周期钩子也会被触发
+> - `v-show` 只是在元素上添加 `display: none;`
+
+#### 生命周期
+
+1. `beforeCreate`
+2. `created`
+   创建完实例后被立即调统 可以 访问 `this` 常常这个时候回做数据请求 但 dom 还没有创建
+3. `beforeMount`
+4. `mounted`
+   实例被挂载后调用 一般配合 `$nextTick` 做 dom 操作处理
+5. `beforeUpdate`
+6. `updated`
+7. `beforeDestroy`
+   组件将要被销毁了 这个时候一般要去移除组件绑定的事件 以及 定时器操作等
+8. `destoryed`
+
+#### location.href 和 vue-router 跳转有什么区别
+
+对于单页面应用来说 就是不刷新页面来提升用户体验 但是一旦用了 location.href 的话就是刷新页面了 那就是违背了初衷了
+
+> - location.href 刷新了页面 整个页面都会重新请求 内存也被释放了
+> - vue-router 只是想路由栈添加一条记录 并重新绘制页面
+
+#### MVVM 如何实现
+
+MVVM 即 `Model-View-ViewModel`
+
+> - 对 Vue2.x 来说:
+>   在 `data` 中定义的属性 会通过 `Object.defineProperty` 去劫持 `setter` 和 `getter`
+>   所以我们改变 `this.xxx` 的时候 页面劫持了 `setter` 就不需要我们手动去操作 DOM 了
+> - Vue.set
+>   这种就是发布订阅者模式了 通过
+
 ## JS
 
 #### 基本数据类型
@@ -179,6 +215,30 @@ a === b; // false   由于是引用数据类型 这里比较的是内存地址�
 JSON.stringify(a) === JSON.stringify(b); // true
 ```
 
+#### 浮点数计算
+
+> 由于`js`浮点数类型基于`IEEE 754`标准 (ps: 这已经是历史遗留下来的问题了)
+> 所以会有 浮点数计算的 bug
+
+```js
+0.1 + 0.2 = 0.30000000000000004; // ？？？？？？
+```
+
+我也曾被这个问题困扰过  
+目前 github 和 npm 上的第三方库多多少少都存在一点问题
+
+- [numbers/numbers.js](https://github.com/numbers/numbers.js)
+- [MikeMcl/big.js](https://github.com/MikeMcl/big.js/)
+
+#### static 和 assets 有什么区别
+
+其实这个问题在 前端规范 上来讲的话
+
+- static
+  > 一般是指存放静态资源的目录 该目录不被 `webpack` 或其他构建工作所打包及压缩 打包后直接 copy 到打包后的目录中
+- assets
+  > 一般把需要被 `webpack` 打包的文件放在改目录下 以便压缩、混淆...
+
 #### es6 语法
 
 ```js
@@ -221,4 +281,15 @@ http {
         proxy_pass xxx指向服务器代理地址; # 后端 api 地址
     }
 }
+```
+
+## jQuery
+
+> 除非公司要维护旧项目 应该很少有公司会提问 jQuery 了吧
+
+#### jQuery 属性选择器如何拿到第三个 input 节点
+
+```js
+$(".xxx:eq(2)");
+$(".xxx").eq(2);
 ```
