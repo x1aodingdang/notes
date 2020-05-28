@@ -116,6 +116,48 @@ new VueRouter({
    组件将要被销毁了 这个时候一般要去移除组件绑定的事件 以及 定时器操作等
 8. `destoryed`
 
+#### 项目中有多个环境怎么处理
+
+我一般会配置一个 `config` 文件
+
+```js
+export default {
+  "development": {
+    "API": "http://dev.xxx.com/",
+    ...
+  },
+  "test": {
+    "API": "http://test.xxx.com/",
+    ...
+  },
+  "production": {
+    "API": "http://api.xxx.com/",
+    ...
+  },
+  ...
+}[process.env.NODE_ENV];
+```
+
+然后在启动项目或者打包项目的时候 去配置 `NODE_ENV` 的环境变量
+
+#### v-once 是做什么的
+
+> - v-once
+>   只渲染一次 常用于静态内容的渲染 有利于优化更新性能
+>   参考 https://cn.vuejs.org/v2/api/#v-once
+
+#### 单页面多页面区别
+
+> - 单页面
+>   良好的用户体验
+>   但是不利于 SEO
+>   数据交互通讯方面可以使用 vuex、redux、这种状态管理
+> - 多页面
+>   每次跳转页面都会刷新 多户体验稍微降低
+>   数据交互通讯 只能 url cookie session local 这种存储 没有 状态管理方便
+>   ...
+>   参考 https://juejin.im/post/5a0ea4ec6fb9a0450407725c
+
 #### location.href 和 vue-router 跳转有什么区别
 
 对于单页面应用来说 就是不刷新页面来提升用户体验 但是一旦用了 location.href 的话就是刷新页面了 那就是违背了初衷了
@@ -133,6 +175,12 @@ MVVM 即 `Model-View-ViewModel`
 > - Vue.set
 >   这种就是发布订阅者模式了 通过
 
+#### diff 算法理解
+
+我觉得这篇文章不错
+
+> 参考 https://juejin.im/post/5ad6182df265da23906c8627
+
 ## JS
 
 #### 基本数据类型
@@ -143,6 +191,59 @@ MVVM 即 `Model-View-ViewModel`
 - undefind
 - null
 - symbol
+
+#### 图片懒加载原理是什么
+
+```html
+<img
+  class="lazy-img"
+  lazy-src="https://avatars1.githubusercontent.com/u/29798915?s=60&v=4"
+/>
+```
+
+> 如上代码所示 img 标签并没有 `src` 属性 所以他并不会展示图片
+> 核心就是：如果 img 出现在了可视区域将 `img.src = img['lazy-src']`
+
+#### 如何给数组添加新的方法？
+
+```js
+var a = [];
+a.__proto__.console = function () {
+  console.log(this);
+};
+Array.prototype._push = function () {
+  return this.push(...arguments);
+};
+```
+
+#### 双等三等区别
+
+双等只比较值相不相等 三等还比较了类型相不相等
+
+```js
+1 == "1"; // true
+1 === "1"; // false
+```
+
+#### 如何判断两个数组是否相等，是用双等还是三等？
+
+```js
+var a = [1, 2, 3];
+var b = [1, 2, 3];
+a == b; // false   由于是引用数据类型 这里比较的是内存地址值
+a === b; // false   由于是引用数据类型 这里比较的是内存地址值
+// 简单粗暴
+JSON.stringify(a) === JSON.stringify(b); // true
+```
+
+#### 如何解决跨域
+
+> - nginx 反向代理
+> - 后端配置白名单
+> - webpack - proxy (作用于开发环境)
+
+> 一般还是使用前两种方法比较好 但都需要后端配合
+> 注意 ⚠️：`webpack proxy` 只能作用于开发环境
 
 #### 什么是闭包
 
@@ -181,38 +282,6 @@ function b() {
     var g = 4; // 在 d 函数体的作用局
   }
 }
-```
-
-#### 如何给数组添加新的方法？
-
-```js
-var a = [];
-a.__proto__.console = function () {
-  console.log(this);
-};
-Array.prototype._push = function () {
-  return this.push(...arguments);
-};
-```
-
-#### 双等三等区别
-
-双等只比较值相不相等 三等还比较了类型相不相等
-
-```js
-1 == "1"; // true
-1 === "1"; // false
-```
-
-#### 如何判断两个数组是否相等，是用双等还是三等？
-
-```js
-var a = [1, 2, 3];
-var b = [1, 2, 3];
-a == b; // false   由于是引用数据类型 这里比较的是内存地址值
-a === b; // false   由于是引用数据类型 这里比较的是内存地址值
-// 简单粗暴
-JSON.stringify(a) === JSON.stringify(b); // true
 ```
 
 #### 浮点数计算
