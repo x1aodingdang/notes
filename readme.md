@@ -181,6 +181,42 @@ MVVM 即 `Model-View-ViewModel`
 
 > 参考 https://juejin.im/post/5ad6182df265da23906c8627
 
+## React
+
+#### React 组件传值有哪些方法
+
+```jsx
+function Father() {
+  return (
+    <BusContext.Provider value={value}>
+      <div>
+        xxx
+        <Son name="xiaoming"></Son>
+        ...
+      </div>
+    </BusContext.Provider>
+  );
+}
+function Son(props) {
+  const value = useContext(BusContext);
+  return <div>{props.name}</div>;
+}
+```
+
+#### React 生命周期，每个阶段做了什么
+
+> 参考 https://zh-hans.reactjs.org/docs/react-component.html#the-component-lifecycle
+> https://projects.wojtekmaj.pl/react-lifecycle-methods-diagram/
+
+#### React 的 Provide 和 consume 是因为什么产生的？
+
+我平常用到 Provider 就是在 父组件给后代组件获取状态用的  
+就像 Vue 里面的`provide/inject`一样
+
+#### React 版本升级时，会有一些组件没法用，页面显示白屏，如何定位是哪些组件出的问题
+
+像这种版本升级 react 一般控制台都会控制台有警告 会提示 xxx 钩子或者 xxx 组件 在 xxx 版本已被弃用 然后平常多关注一些社区动态 更新日志等。
+
 ## JS
 
 #### 基本数据类型
@@ -203,6 +239,30 @@ MVVM 即 `Model-View-ViewModel`
 
 > 如上代码所示 img 标签并没有 `src` 属性 所以他并不会展示图片
 > 核心就是：如果 img 出现在了可视区域将 `img.src = img['lazy-src']`
+
+#### 浅拷贝、深拷贝
+
+```js
+JSON.parse(JSON.stringify()); // 缺点 undefin null function 会被忽略
+
+{...{}}; // 缺点 只支持一层深拷贝
+
+Object.assign({},{}) // 缺点 只支持一层深拷贝
+
+// 终极大法
+function deepCopy(obj) {
+  const _obj = Array.isArray(obj) ? [] : {};
+  Object.keys(obj).forEach(v => {
+    if (typeof obj[v] === "object") {
+      _obj[v] = deepCopy(obj[v]);
+    } else {
+      _obj[v] = obj[v];
+    }
+  });
+
+  return _obj;
+}
+```
 
 #### 如何给数组添加新的方法？
 
