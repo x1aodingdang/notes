@@ -205,8 +205,7 @@ function Son(props) {
 
 #### React 生命周期，每个阶段做了什么
 
-> 参考 https://zh-hans.reactjs.org/docs/react-component.html#the-component-lifecycle
-> https://projects.wojtekmaj.pl/react-lifecycle-methods-diagram/
+> 参考 https://zh-hans.reactjs.org/docs/react-component.html#the-component-lifecycle > https://projects.wojtekmaj.pl/react-lifecycle-methods-diagram/
 
 #### React 的 Provide 和 consume 是因为什么产生的？
 
@@ -342,6 +341,44 @@ function b() {
     var g = 4; // 在 d 函数体的作用局
   }
 }
+```
+
+#### 编写 js 事件绑定函数
+
+```js
+// 写的比较简单
+const Event = {
+  eventList: {},
+  // 绑定
+  on(eventName, callback) {
+    if (typeof callback !== "function") return;
+    if (this.hasEvent(eventName)) {
+      this.eventList[eventName].push(callback);
+    } else {
+      this.eventList[eventName] = [callback];
+    }
+  },
+  // 解绑
+  off(eventName, callback) {
+    if (this.hasEvent(eventName)) {
+      const index = this.eventList[eventName].indexOf(callback);
+      if (index !== -1) {
+        this.eventList[eventName].splice(index, 1);
+      }
+    }
+  },
+  // 触发事件
+  emit(eventName) {
+    if (this.hasEvent(eventName)) {
+      this.eventList[eventName].forEach((cb) => {
+        cb();
+      });
+    }
+  },
+  hasEvent(eventName) {
+    return this.eventList.hasOwnProperty(eventName);
+  },
+};
 ```
 
 #### 浮点数计算
